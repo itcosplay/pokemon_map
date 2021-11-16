@@ -4,6 +4,9 @@ import json
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 
+from .models import Pokemon
+from .models import PokemonEntity
+
 
 MOSCOW_CENTER = [55.751244, 37.618423]
 DEFAULT_IMAGE_URL = (
@@ -14,11 +17,11 @@ DEFAULT_IMAGE_URL = (
 
 
 def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
-    icon = folium.features.CustomIcon(
+    icon = folium.features.CustomIcon (
         image_url,
         icon_size=(50, 50),
     )
-    folium.Marker(
+    folium.Marker (
         [lat, lon],
         # Warning! `tooltip` attribute is disabled intentionally
         # to fix strange folium cyrillic encoding bug
@@ -27,30 +30,40 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 
 def show_all_pokemons(request):
-    with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
-        pokemons = json.load(database)['pokemons']
+    # with open('pokemon_entities/pokemons.json', encoding='utf-8') as database:
+    #     pokemons = json.load(database)['pokemons']
+
+    pokemons = Pokemon.objects.all()
+    pokemon_entities = PokemonEntity.objects.all()
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
+
     for pokemon in pokemons:
-        for pokemon_entity in pokemon['entities']:
-            add_pokemon(
-                folium_map, pokemon_entity['lat'],
-                pokemon_entity['lon'],
-                pokemon['img_url']
+        for pokemon_entity in pokemon_entities:
+            add_pokemon (
+                folium_map,
+                pokemon_entity.latitude,
+                pokemon_entity.lontitude,
+                pokemon.image.path
             )
 
     pokemons_on_page = []
+
     for pokemon in pokemons:
-        pokemons_on_page.append({
-            'pokemon_id': pokemon['pokemon_id'],
-            'img_url': pokemon['img_url'],
-            'title_ru': pokemon['title_ru'],
+        pokemons_on_page.append ({
+            'pokemon_id': pokemon.id,
+            'img_url': pokemon.image.url,
+            'title_ru': pokemon.title,
         })
 
-    return render(request, 'mainpage.html', context={
-        'map': folium_map._repr_html_(),
-        'pokemons': pokemons_on_page,
-    })
+    return render (
+        request, 
+        'mainpage.html', 
+        context= {
+            'map': folium_map._repr_html_(),
+            'pokemons': pokemons_on_page,
+        }
+    )
 
 
 def show_pokemon(request, pokemon_id):
