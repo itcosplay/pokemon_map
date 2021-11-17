@@ -74,41 +74,27 @@ def show_pokemon(request, pokemon_id):
 
     else:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
-    print('$$$$$$$$$$$$$$$')
-    print()
-    print(request.build_absolute_uri(pokemon.image.url))
-    print()
-    print('$$$$$$$$$$$$$$$')
     
     pokemon = {
         "pokemon_id": pokemon_id,
         "title_ru": pokemon.title,
-        "title_en": "Bulbasaur",
-        "title_jp": "フシギダネ",
-        "description": "cтартовый покемон двойного травяного и ядовитого типа из первого поколения и региона Канто. В национальном покедексе под номером 1. На 16 уровне эволюционирует в Ивизавра. Ивизавр на 32 уровне эволюционирует в Венузавра. Наряду с Чармандером и Сквиртлом, Бульбазавр является одним из трёх стартовых покемонов региона Канто.",
-        # "img_url": "https://upload.wikimedia.org/wikipedia/ru/c/ca/%D0%91%D1%83%D0%BB%D1%8C%D0%B1%D0%B0%D0%B7%D0%B0%D0%B2%D1%80.png",
-        # "img_url": pokemon.image.path,
+        "title_en": pokemon.title_en,
+        "title_jp": pokemon.title_jp,
+        "description": pokemon.description,
         "img_url": request.build_absolute_uri(pokemon.image.url),
-        # "entities": [
-        #     {
-        #         "level": 15,
-        #         "lat": 55.753244,
-        #         "lon": 37.628423
-        #     },
-        #     {
-        #         "level": 24,
-        #         "lat": 55.743244,
-        #         "lon": 37.635423
-        #     }
-        # ],
-        "next_evolution": {
-            "title_ru": "Ивизавр",
-            "pokemon_id": 2,
-            "img_url": "https://vignette.wikia.nocookie.net/pokemon/images/7/73/002Ivysaur.png/revision/latest/scale-to-width-down/200?cb=20150703180624&path-prefix=ru"
-        }
     }
 
+    if "next_evolution" in pokemon:
+        next_evolution_data = {}
+        next_evolution_data["title_ru"] = pokemon.next_evolution.title
+        next_evolution_data["pokemon_id"] = pokemon.next_evolution
+        next_evolution_data["img_url"] = request.build_absolute_uri (
+            pokemon.next_evolution.image.url
+        )
+        pokemon["next_evolution"] = next_evolution_data
+
     pokemon_entities_list = []
+
     for pokemon_entity in pokemon_entities:
         pokemon_entity_data = {}
         pokemon_entity_data["level"] = pokemon_entity.level
@@ -120,13 +106,6 @@ def show_pokemon(request, pokemon_id):
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    # for pokemon_entity in pokemon_entities:
-    #     add_pokemon (
-    #         folium_map,
-    #         pokemon_entity.latitude,
-    #         pokemon_entity.lontitude,
-    #         pokemon.image.path
-    #     )
     for pokemon_entity in pokemon["entities"]:
         add_pokemon (
             folium_map,

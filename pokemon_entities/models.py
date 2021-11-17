@@ -1,10 +1,14 @@
 from django.db import models
-from django.db.models.deletion import CASCADE
+from django.db.models.deletion import CASCADE, SET_NULL
 
 
 class Pokemon(models.Model):
     title = models.CharField(max_length=200)
+    title_en = models.CharField(max_length=200, blank=True)
+    title_jp = models.CharField(max_length=200, blank=True)
+    description = models.TextField(blank=True)
     image = models.ImageField(blank=True)
+    next_evolution = models.ForeignKey('self', on_delete=SET_NULL, null = True, blank=True)
 
     def __str__(self):
 
