@@ -75,23 +75,32 @@ def show_pokemon(request, pokemon_id):
     else:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
     
-    pokemon = {
+    pokemon_json = {
         "pokemon_id": pokemon_id,
         "title_ru": pokemon.title,
         "title_en": pokemon.title_en,
         "title_jp": pokemon.title_jp,
         "description": pokemon.description,
-        "img_url": request.build_absolute_uri(pokemon.image.url),
+        "img_url": request.build_absolute_uri(pokemon.image.url)
     }
 
-    if "next_evolution" in pokemon:
+    if not pokemon.next_evolution is None:
         next_evolution_data = {}
         next_evolution_data["title_ru"] = pokemon.next_evolution.title
         next_evolution_data["pokemon_id"] = pokemon.next_evolution
         next_evolution_data["img_url"] = request.build_absolute_uri (
             pokemon.next_evolution.image.url
         )
-        pokemon["next_evolution"] = next_evolution_data
+        pokemon_json["next_evolution"] = next_evolution_data
+
+    if not pokemon.previous_evolution is None:
+        next_evolution_data = {}
+        next_evolution_data["title_ru"] = pokemon.previous_evolution.title
+        next_evolution_data["pokemon_id"] = pokemon.previous_evolution
+        next_evolution_data["img_url"] = request.build_absolute_uri (
+            pokemon.previous_evolution.image.url
+        )
+        pokemon_json["previous_evolution"] = next_evolution_data
 
     pokemon_entities_list = []
 
@@ -102,16 +111,16 @@ def show_pokemon(request, pokemon_id):
         pokemon_entity_data["lon"] = pokemon_entity.lontitude
         pokemon_entities_list.append(pokemon_entity_data)
 
-    pokemon["entities"] = pokemon_entities_list
+    pokemon_json["entities"] = pokemon_entities_list
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    for pokemon_entity in pokemon["entities"]:
+    for pokemon_entity in pokemon_json["entities"]:
         add_pokemon (
             folium_map,
             pokemon_entity['lat'],
             pokemon_entity['lon'],
-            pokemon['img_url']
+            pokemon_json['img_url']
         )
 
     return render (
@@ -119,6 +128,6 @@ def show_pokemon(request, pokemon_id):
         'pokemon.html',
         context = {
             'map': folium_map._repr_html_(),
-            'pokemon': pokemon
+            'pokemon': pokemon_json
         }
     )
