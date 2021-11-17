@@ -9,6 +9,7 @@ from .models import PokemonEntity
 
 
 MOSCOW_CENTER = [55.751244, 37.618423]
+
 DEFAULT_IMAGE_URL = (
     'https://vignette.wikia.nocookie.net/pokemon/images/6/6e/%21.png/revision'
     '/latest/fixed-aspect-ratio-down/width/240/height/240?cb=20130525215832'
@@ -68,7 +69,9 @@ def show_pokemon(request, pokemon_id):
     for pokemon in pokemons:
         if pokemon.id == int(pokemon_id):
             requested_pokemon = pokemon
-            pokemon_entities = PokemonEntity.objects.filter(id=requested_pokemon.id)
+            pokemon_entities = PokemonEntity.objects.filter (
+                id=requested_pokemon.id
+            )
 
             break
 
@@ -87,7 +90,7 @@ def show_pokemon(request, pokemon_id):
     if not pokemon.next_evolution is None:
         next_evolution_data = {}
         next_evolution_data["title_ru"] = pokemon.next_evolution.title
-        next_evolution_data["pokemon_id"] = pokemon.next_evolution
+        next_evolution_data["pokemon_id"] = pokemon.next_evolution.id
         next_evolution_data["img_url"] = request.build_absolute_uri (
             pokemon.next_evolution.image.url
         )
@@ -96,7 +99,7 @@ def show_pokemon(request, pokemon_id):
     if not pokemon.previous_evolution is None:
         next_evolution_data = {}
         next_evolution_data["title_ru"] = pokemon.previous_evolution.title
-        next_evolution_data["pokemon_id"] = pokemon.previous_evolution
+        next_evolution_data["pokemon_id"] = pokemon.previous_evolution.id
         next_evolution_data["img_url"] = request.build_absolute_uri (
             pokemon.previous_evolution.image.url
         )
