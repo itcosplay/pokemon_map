@@ -29,7 +29,6 @@ class Pokemon(models.Model):
         on_delete=SET_NULL,
         null = True,
         blank=True,
-        related_name='+',
         verbose_name='Эволюционировал из'
     )
 
