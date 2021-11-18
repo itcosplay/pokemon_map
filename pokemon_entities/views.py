@@ -74,46 +74,46 @@ def show_pokemon(request, pokemon_id):
     pokemon_entities = pokemon.entities.all()
     
     pokemon_json = {
-        "pokemon_id": pokemon_id,
-        "title_ru": pokemon.title,
-        "title_en": pokemon.title_en,
-        "title_jp": pokemon.title_jp,
-        "description": pokemon.description,
-        "img_url": request.build_absolute_uri(pokemon.image.url)
+        'pokemon_id': pokemon_id,
+        'title_ru': pokemon.title,
+        'title_en': pokemon.title_en,
+        'title_jp': pokemon.title_jp,
+        'description': pokemon.description,
+        'img_url': request.build_absolute_uri(pokemon.image.url)
     }
 
     if not pokemon.next_evolution is None:
         next_evolution_data = {}
-        next_evolution_data["title_ru"] = pokemon.next_evolution.title
-        next_evolution_data["pokemon_id"] = pokemon.next_evolution.id
-        next_evolution_data["img_url"] = request.build_absolute_uri (
+        next_evolution_data['title_ru'] = pokemon.next_evolution.title
+        next_evolution_data['pokemon_id'] = pokemon.next_evolution.id
+        next_evolution_data['img_url'] = request.build_absolute_uri (
             pokemon.next_evolution.image.url
         )
-        pokemon_json["next_evolution"] = next_evolution_data
+        pokemon_json['next_evolution'] = next_evolution_data
 
     if not pokemon.previous_evolution is None:
         next_evolution_data = {}
-        next_evolution_data["title_ru"] = pokemon.previous_evolution.title
-        next_evolution_data["pokemon_id"] = pokemon.previous_evolution.id
-        next_evolution_data["img_url"] = request.build_absolute_uri (
+        next_evolution_data['title_ru'] = pokemon.previous_evolution.title
+        next_evolution_data['pokemon_id'] = pokemon.previous_evolution.id
+        next_evolution_data['img_url'] = request.build_absolute_uri (
             pokemon.previous_evolution.image.url
         )
-        pokemon_json["previous_evolution"] = next_evolution_data
+        pokemon_json['previous_evolution'] = next_evolution_data
 
     pokemon_entities_list = []
 
     for pokemon_entity in pokemon_entities:
         pokemon_entity_data = {}
-        pokemon_entity_data["level"] = pokemon_entity.level
-        pokemon_entity_data["lat"] = pokemon_entity.latitude
-        pokemon_entity_data["lon"] = pokemon_entity.lontitude
+        pokemon_entity_data['level'] = pokemon_entity.level
+        pokemon_entity_data['lat'] = pokemon_entity.latitude
+        pokemon_entity_data['lon'] = pokemon_entity.lontitude
         pokemon_entities_list.append(pokemon_entity_data)
 
     pokemon_json["entities"] = pokemon_entities_list
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    for pokemon_entity in pokemon_json["entities"]:
+    for pokemon_entity in pokemon_json['entities']:
         add_pokemon (
             folium_map,
             pokemon_entity['lat'],
