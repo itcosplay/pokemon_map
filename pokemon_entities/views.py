@@ -73,7 +73,7 @@ def show_pokemon(request, pokemon_id):
     
     pokemon_entities = pokemon.entities.all()
     
-    pokemon_json = {
+    pokemon_data = {
         'pokemon_id': pokemon_id,
         'title_ru': pokemon.title,
         'title_en': pokemon.title_en,
@@ -89,7 +89,7 @@ def show_pokemon(request, pokemon_id):
         next_evolution_data['img_url'] = request.build_absolute_uri (
             pokemon.next_evolution.image.url
         )
-        pokemon_json['next_evolution'] = next_evolution_data
+        pokemon_data['next_evolution'] = next_evolution_data
 
     if not pokemon.previous_evolution is None:
         next_evolution_data = {}
@@ -98,7 +98,7 @@ def show_pokemon(request, pokemon_id):
         next_evolution_data['img_url'] = request.build_absolute_uri (
             pokemon.previous_evolution.image.url
         )
-        pokemon_json['previous_evolution'] = next_evolution_data
+        pokemon_data['previous_evolution'] = next_evolution_data
 
     pokemon_entities_list = []
 
@@ -109,16 +109,16 @@ def show_pokemon(request, pokemon_id):
         pokemon_entity_data['lon'] = pokemon_entity.lontitude
         pokemon_entities_list.append(pokemon_entity_data)
 
-    pokemon_json["entities"] = pokemon_entities_list
+    pokemon_data["entities"] = pokemon_entities_list
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
-    for pokemon_entity in pokemon_json['entities']:
+    for pokemon_entity in pokemon_data['entities']:
         add_pokemon (
             folium_map,
             pokemon_entity['lat'],
             pokemon_entity['lon'],
-            pokemon_json['img_url']
+            pokemon_data['img_url']
         )
 
     return render (
@@ -126,6 +126,6 @@ def show_pokemon(request, pokemon_id):
         'pokemon.html',
         context = {
             'map': folium_map._repr_html_(),
-            'pokemon': pokemon_json
+            'pokemon': pokemon_data
         }
     )
