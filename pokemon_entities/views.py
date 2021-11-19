@@ -102,7 +102,7 @@ def show_pokemon(request, pokemon_id):
         }
         pokemon_data['previous_evolution'] = previous_evolution_data
 
-    pokemon_entities_list = []
+    pokemon_entities_on_map = []
 
     for pokemon_entity in pokemon_entities:
         pokemon_entity_data = {
@@ -111,9 +111,9 @@ def show_pokemon(request, pokemon_id):
             'lon': pokemon_entity.lontitude
         }
         
-        pokemon_entities_list.append(pokemon_entity_data)
+        pokemon_entities_on_map.append(pokemon_entity_data)
 
-    pokemon_data['entities'] = pokemon_entities_list
+    pokemon_data['entities'] = pokemon_entities_on_map
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
 
