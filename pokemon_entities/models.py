@@ -21,15 +21,8 @@ class Pokemon(models.Model):
         on_delete=SET_NULL,
         null = True,
         blank=True,
-        related_name='+',
+        related_name='previous_evolution',
         verbose_name='Эволюционирует в'
-    )
-    previous_evolution = models.ForeignKey (
-        'self', 
-        on_delete=SET_NULL,
-        null = True,
-        blank=True,
-        verbose_name='Эволюционировал из'
     )
 
     def __str__(self):

@@ -92,12 +92,12 @@ def show_pokemon(request, pokemon_id):
         }
         pokemon_data['next_evolution'] = next_evolution_data
 
-    if pokemon.previous_evolution is not None:
+    if pokemon.previous_evolution.first() is not None:
         previous_evolution_data = {
-            'title': pokemon.previous_evolution.title,
-            'pokemon_id': pokemon.previous_evolution.id,
+            'title': pokemon.previous_evolution.first().title,
+            'pokemon_id': pokemon.previous_evolution.first().id,
             'img_url': request.build_absolute_uri (
-                pokemon.previous_evolution.image.url
+                pokemon.previous_evolution.first().image.url
             )
         }
         pokemon_data['previous_evolution'] = previous_evolution_data
